@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica 4 · Informe de errores</title>
+<style>
+  :root{
+    --bg:#f4f2ed; --surface:#ffffff; --surface-2:#eae6dc;
+    --ink:#1b2630; --ink-soft:#5b6970;
+    --accent:#1f7a6c; --accent-ink:#0f4a41; --accent-soft:#dcefea;
+    --amber:#a85a26; --amber-soft:#f3e3d3;
+    --line:rgba(27,38,48,.14);
+    --term-bg:#161b1e; --term-ink:#d7e0e0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#10161c; --surface:#161e25; --surface-2:#1c252c;
+      --ink:#e7ecec; --ink-soft:#9fb0b6;
+      --accent:#4fc3ae; --accent-ink:#bdeee2; --accent-soft:rgba(79,195,174,.16);
+      --amber:#e2a164; --amber-soft:rgba(226,161,100,.16);
+      --line:rgba(231,236,236,.14);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.6; font-size:15px;}
+  main{max-width:820px; margin:0 auto; padding:40px 16px 80px;}
+  h1{font-size:28px; margin:6px 0 10px; letter-spacing:-.01em;}
+  h2{font-size:19px; margin:40px 0 12px;}
+  h3{font-size:16px; margin:0 0 10px;}
+  p{margin:0 0 12px;}
+  code,pre{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:13px;}
+  code{background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+  pre{background:var(--term-bg); color:var(--term-ink); padding:12px 14px; border-radius:8px; overflow-x:auto; margin:8px 0 12px; line-height:1.55;}
+  pre code{background:none; padding:0;}
+  a{color:var(--accent-ink);}
+  .kicker{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); font-weight:700;}
+  .lead{color:var(--ink-soft); max-width:65ch;}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0;}
+  .badge{font-size:12px; font-weight:600; padding:4px 10px; border-radius:100px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-soft);}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:0 0 14px;}
+  .card .n{font-family:ui-monospace,Consolas,monospace; font-size:12px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); padding:2px 8px; border-radius:100px; margin-right:8px;}
+  .tag{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 8px; border-radius:100px; margin-left:6px; white-space:nowrap;}
+  .tag.err{color:var(--amber); background:var(--amber-soft);}
+  .tag.obs{color:var(--ink-soft); background:var(--surface-2);}
+  dl{margin:0; display:grid; grid-template-columns:110px 1fr; gap:6px 14px;}
+  dt{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); padding-top:3px;}
+  dd{margin:0; min-width:0;}
+  @media (max-width:560px){ dl{grid-template-columns:1fr;} }
+  .table-wrap{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; font-size:14px;}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
+  footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:13px; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<main>
+  <span class="kicker">Integración de Sistemas · Semana 4 · Práctica v2</span>
+  <h1>Informe de errores y soluciones</h1>
+  <p class="lead">Servidor GraphQL con NestJS conectado a la API REST de productos. Este informe recoge los errores y diferencias que aparecieron al seguir la guía, su causa y cómo se resolvió cada uno.</p>
+  <div class="meta">
+    <span class="badge">Autor: Daniel González</span>
+    <span class="badge">Fecha: 30/09/2026</span>
+    <span class="badge">Node v24.14.0 · npm 11.9.0</span>
+    <span class="badge">NestJS 12.1.2 · TypeScript 6</span>
+  </div>
+
+  <h2>Resumen</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>Problema</th><th>Paso</th><th>Solución</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>No existía <code>src/productos</code></td><td>2</td><td>Crear la carpeta y los dos archivos a mano</td></tr>
+      <tr><td>2</td><td><code>@nestjs/observe</code> no instalado</td><td>3</td><td>Quitar <code>ObserveModule</code> de <code>app.module.ts</code></td></tr>
+      <tr><td>3</td><td>Puerto 3000 ocupado por otra aplicación</td><td>4</td><td>Arrancar con <code>PORT=3456</code></td></tr>
+      <tr><td>4</td><td><code>TS5011</code> al ejecutar las pruebas</td><td>CI</td><td><code>tsconfig.spec.json</code> con <code>rootDir</code></td></tr>
+      <tr><td>5</td><td>Jest: <code>Must use import to load ES Module</code></td><td>CI</td><td>Ejecutar Jest con <code>--experimental-vm-modules</code></td></tr>
+      <tr><td>6</td><td><code>productoPorId(id: 2)</code> devuelve error</td><td>6</td><td>Comportamiento esperado; no se cambió</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>Errores encontrados</h2>
+
+  <div class="card">
+    <h3><span class="n">1</span>No encontraba la carpeta <code>productos</code> ni <code>producto.model.ts</code><span class="tag obs">Confusión</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd>Al llegar al Paso 2 busqué <code>src/productos/producto.model.ts</code> y no existía.</dd>
+      <dt>Causa</dt><dd><code>nest new</code> solo genera <code>app.controller</code>, <code>app.module</code>, <code>app.service</code> y <code>main</code>. La guía pide crear la carpeta y los archivos; no vienen en el proyecto.</dd>
+      <dt>Solución</dt><dd>Crear <code>src/productos/</code> con <code>producto.model.ts</code> y <code>productos.resolver.ts</code> usando el código de la guía.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">2</span>El <code>app.module.ts</code> de la guía importa <code>@nestjs/observe</code><span class="tag err">Error</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd>Tras copiar el <code>app.module.ts</code> del Paso 3, el import <code>import { createObserveModule } from '@nestjs/observe'</code> apunta a un paquete que no está en <code>package.json</code> ni en <code>node_modules</code>.</dd>
+      <dt>Causa</dt><dd>La guía asume que <code>nest new</code> genera un proyecto con <code>ObserveModule</code> y un <code>main.ts</code> que usa <code>ObserveInstrument</code>. Mi proyecto se generó sin eso: <code>main.ts</code> es el clásico de tres líneas y tampoco tiene <code>"type": "module"</code> en <code>package.json</code>.</dd>
+      <dt>Solución</dt><dd>No instalar el paquete (habría quedado configurado con las claves de relleno <code>YOUR_APP_KEY</code>). Se eliminaron de <code>app.module.ts</code> el import, la línea <code>createObserveModule()</code> y el bloque <code>ObserveModule.forRoot({...})</code>. Lo mismo al repetir el archivo en el Paso 6.
+<pre><code>@Module({
+  imports: [
+    GraphQLModule.forRoot&lt;ApolloDriverConfig&gt;({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'schema.gql'),
+    }),
+    HttpModule.register({}),
+  ],
+  controllers: [AppController],
+  providers: [AppService, ProductosResolver],
+})
+export class AppModule {}</code></pre>
+      Los imports con <code>.js</code> funcionan igual sin <code>"type": "module"</code>, porque <code>tsconfig.json</code> usa <code>module: nodenext</code>.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">3</span>El puerto 3000 respondía otra aplicación<span class="tag err">Error</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd>Las consultas a <code>http://localhost:3000/graphql</code> devolvían un 404 que no era de este proyecto:
+<pre><code>{"title":"Recurso no encontrado","status":404,"detail":"Cannot POST /graphql"}</code></pre></dd>
+      <dt>Causa</dt><dd>Otro proyecto de Node ya estaba escuchando en el puerto 3000 de mi máquina.</dd>
+      <dt>Solución</dt><dd><code>main.ts</code> lee <code>process.env.PORT</code>, así que se arrancó en otro puerto (<code>PORT=3456</code>) y se probó en <code>http://localhost:3456/graphql</code>. La alternativa es detener la otra aplicación.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">4</span><code>TS5011</code> al ejecutar <code>npm test</code><span class="tag err">Error</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd>Fallaba incluso la prueba que trae el proyecto recién generado:
+<pre><code>error TS5011: The common source directory of 'tsconfig.json' is './src'.
+The 'rootDir' setting must be explicitly set to this or another path...</code></pre></dd>
+      <dt>Causa</dt><dd>TypeScript 6 exige un <code>rootDir</code> explícito. <code>tsconfig.build.json</code> lo define para compilar, pero <code>ts-jest</code> usa <code>tsconfig.json</code>, que no lo tiene.</dd>
+      <dt>Solución</dt><dd>Se añadió <code>tsconfig.spec.json</code> (extiende <code>tsconfig.json</code> con <code>"rootDir": "."</code>) y se indicó a <code>ts-jest</code> que lo use en <code>jest.config.ts</code> y <code>test/jest-e2e.json</code>.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">5</span>Jest no podía cargar los paquetes de NestJS 12<span class="tag err">Error</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd><pre><code>Must use import to load ES Module: ...\node_modules\@nestjs\testing\index.js</code></pre></dd>
+      <dt>Causa</dt><dd>Los paquetes de NestJS 12 se publican como módulos ES (<code>"type": "module"</code>). Jest solo puede cargarlos desde pruebas CommonJS si Node se ejecuta con soporte de módulos en <code>vm</code>.</dd>
+      <dt>Solución</dt><dd>Los scripts de prueba de <code>package.json</code> ejecutan Jest con esa opción:
+<pre><code>"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"</code></pre>
+      Además se añadió un <code>moduleNameMapper</code> para que los imports relativos terminados en <code>.js</code> se resuelvan a los archivos <code>.ts</code> durante las pruebas.</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">6</span><code>productoPorId(id: 2)</code> responde <code>INTERNAL_SERVER_ERROR</code><span class="tag obs">Esperado</span></h3>
+    <dl>
+      <dt>Síntoma</dt><dd><pre><code>{"errors":[{"message":"Request failed with status code 404",
+  "path":["productoPorId"],"extensions":{"code":"INTERNAL_SERVER_ERROR"}}]}</code></pre></dd>
+      <dt>Causa</dt><dd>La API real solo tiene los ids 1, 3 y 4. Para el id 2 responde <code>404 Producto 2 no existe</code>; Axios lo convierte en excepción y Apollo lo muestra como error interno.</dd>
+      <dt>Solución</dt><dd>Ninguna: es el comportamiento que describe la guía. Con los datos en memoria del Paso 4 la misma consulta devolvía <code>null</code>.</dd>
+    </dl>
+  </div>
+
+  <h2>Otras diferencias con la guía</h2>
+  <div class="card">
+    <ul style="margin:0; padding-left:18px;">
+      <li>Versiones de mi máquina: Node <code>v24.14.0</code> y npm <code>11.9.0</code> (la guía se probó con <code>v24.19.0</code> y <code>11.17.0</code>). <code>npm install</code> muestra avisos <code>EBADENGINE</code> porque <code>@angular-devkit</code> pide Node <code>^24.15.0</code>; son solo avisos y todo funcionó.</li>
+      <li><code>package.json</code> guarda las dependencias con <code>^</code> (por ejemplo <code>^14.0.3</code>); las versiones exactas instaladas quedan fijadas en <code>package-lock.json</code>.</li>
+    </ul>
+  </div>
+
+  <h2>Resultados verificados</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Consulta</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td><code>productos { id nombre precio }</code></td><td>3 productos, ids 1, 3 y 4 (en memoria y desde la API real)</td></tr>
+      <tr><td><code>productoPorId(id: 3) { nombre }</code></td><td>Teclado inalámbrico hp</td></tr>
+      <tr><td><code>productos { nombre }</code></td><td>Solo el campo <code>nombre</code></td></tr>
+      <tr><td><code>productosBaratos(precioMaximo: 50)</code></td><td>1 producto: Teclado mecánico, 45.9</td></tr>
+      <tr><td><code>productosBaratos(precioMaximo: 100)</code></td><td>2 productos</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:12px;">Las consultas se ejecutaron con <code>curl</code> contra <code>/graphql</code>, no desde la interfaz de Apollo Sandbox.</p>
+
+  <h2>Pruebas y GitHub Actions</h2>
+  <div class="card">
+    <p>El flujo <code>.github/workflows/ci.yml</code> se ejecuta en cada push a <code>main</code> con Node 24 y corre: <code>npm ci</code>, <code>npm run lint</code>, <code>npm run build</code>, <code>npm test</code> y <code>npm run test:e2e</code>.</p>
+    <ul style="margin:0; padding-left:18px;">
+      <li><strong>Unitarias (5):</strong> <code>ProductosResolver</code> con <code>HttpService</code> simulado: <code>productos</code>, <code>productoPorId</code> y <code>productosBaratos</code> con 50 y 100; más la prueba de <code>AppController</code>.</li>
+      <li><strong>End-to-end (5):</strong> levantan la aplicación completa y envían consultas GraphQL reales a <code>/graphql</code>.</li>
+      <li>En las pruebas la API de Render se reemplaza por un doble, para que el CI no dependa de internet ni de que el servicio esté despierto.</li>
+    </ul>
+  </div>
+
+  <h2>Comparación con REST</h2>
+  <div class="card">
+    <p style="margin:0;">Para "todos los productos, solo nombres, más el detalle de uno" con REST hacen falta 2 llamadas (<code>GET /api/v1/productos</code> y <code>GET /api/v1/productos/4</code>) y la primera trae además <code>id</code> y <code>precio</code>. Con GraphQL es una sola petición que pide exactamente esos campos. Entre el Paso 4 y el Paso 6 la forma de las consultas no cambió: solo cambió el origen de los datos, del arreglo <code>catalogo</code> en memoria a <code>HttpService</code>.</p>
+  </div>
+
+  <h2>Declaración de uso de IA</h2>
+  <div class="card">
+    <ul style="margin:0; padding-left:18px;">
+      <li><strong>Herramienta:</strong> Claude Code (Claude Opus 5.5), autorizado por el docente para toda la práctica.</li>
+      <li><strong>Qué se le pidió:</strong> completar los pasos de la guía, diagnosticar los errores, escribir las pruebas y el flujo de GitHub Actions, y redactar este informe.</li>
+      <li><strong>Qué se verificó:</strong> compilación, lint, las 10 pruebas y las consultas de la tabla anterior contra la API real.</li>
+    </ul>
+  </div>
+
+  <footer>Repositorio: <a href="https://github.com/DanielGonzalezCeli/Practica4">github.com/DanielGonzalezCeli/Practica4</a></footer>
+</main>
+</body>
+</html>
