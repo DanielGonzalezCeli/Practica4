@@ -12,6 +12,11 @@ import { ProductosResolver } from './productos/productos.resolver.js';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
+      // Explorador GraphiQL e introspección activos también en producción (Render define
+      // NODE_ENV=production), para poder probar la API desde el navegador en /graphql.
+      introspection: true,
+      playground: false,
+      graphiql: true,
     }),
     HttpModule.register({}),
   ],
